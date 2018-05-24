@@ -21,6 +21,8 @@ public class HttpServer {
         InputStream inputStream = null;
         OutputStream outputStream = null;
         Request request = null;
+        Response response = null;
+        ResourceProcessor processor = new ResourceProcessor();
         try {
             serverSocket = new ServerSocket(8080,1, InetAddress.getByName("127.0.0.1"));
             while (!flag){
@@ -31,6 +33,11 @@ public class HttpServer {
                 //包装Request
                 request = new Request(inputStream);
                 request.parse();
+
+                response = new Response(outputStream);
+                response.setRequest(request);
+                //使用处理器处理请求，返回结果
+                processor.process(request,response);
             }
         } catch (IOException e) {
             e.printStackTrace();
